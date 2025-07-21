@@ -10,18 +10,47 @@ Matrix matrix_create(int rows, int cols){
     Matrix m;
     m.rows = rows;
     m.cols = cols;
+    m.stride = cols;
     m.data = (float*) malloc(sizeof(float) * rows * cols);
     assert(m.data != NULL);
     return m;
 }
 
-void matrix_init(Matrix m, float low, float high){
+void matrix_rand(Matrix m, float low, float high){
     for(int i = 0; i < m.rows; i++){
         for(int j = 0; j < m.cols; j++){
             matrix_pos(m, i, j) = random_float(low, high);
         }
     }
 }
+void matrix_fill(Matrix m, float fill){
+        for(int i = 0; i < m.rows; i++){
+        for(int j = 0; j < m.cols; j++){
+            matrix_pos(m, i, j) = fill;
+        }
+    }
+};
+
+Matrix matrix_row(Matrix m, int row){
+    assert(row <= m.rows);
+    assert(row > 0);
+    Matrix res;
+    res.rows = 1;
+    res.cols = m.cols;
+    res.data = &(m.data[(row-1) * m.cols]);
+    return res;
+};
+Matrix matrix_column(Matrix m, int col){
+    assert(col <= m.cols);
+    assert(col > 0);
+    Matrix res;
+    res.rows = m.rows;
+    res.cols = 1;
+    res.stride = m.stride;
+    res.data = &(m.data[(col-1)]);
+    return res;
+
+};
 
 void MATRIX_PRINT(Matrix m, const char *name){
     printf("%s = [\n", name);
