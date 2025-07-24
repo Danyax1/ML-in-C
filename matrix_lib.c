@@ -49,24 +49,48 @@ void matrix_id(Matrix m){
 };
 
 Matrix matrix_row(Matrix m, int row){
-    assert(row <= m.rows);
-    assert(row > 0);
+    assert(row < m.rows);
+    assert(row >= 0);
     Matrix res;
     res.rows = 1;
     res.cols = m.cols;
-    res.data = &(m.data[(row-1) * m.cols]);
+    res.data = &(m.data[(row) * m.cols]);
     return res;
 };
 Matrix matrix_column(Matrix m, int col){
-    assert(col <= m.cols);
-    assert(col > 0);
+    assert(col < m.cols);
+    assert(col >= 0);
     Matrix res;
     res.rows = m.rows;
     res.cols = 1;
     res.stride = m.stride;
-    res.data = &(m.data[(col-1)]);
+    res.data = &(m.data[(col)]);
     return res;
 
+};
+void matrix_swap_row(Matrix m, int r1, int r2) {
+    assert(r1 >= 0 && r1 < m.rows);
+    assert(r2 >= 0 && r2 < m.rows);
+    if (r1 == r2) return;
+
+    for (int i = 0; i < m.cols; i++) {
+        float tmp = matrix_pos(m, r1, i);
+        matrix_pos(m, r1, i) = matrix_pos(m, r2, i);
+        matrix_pos(m, r2, i) = tmp;
+    }
+}
+
+
+void matrix_swap_col(Matrix m, int c1, int c2){
+    assert(c1 >= 0 && c1 < m.cols);
+    assert(c2 >= 0 && c2 < m.cols);
+    if (c1 == c2) return;
+
+    for (int i = 0; i < m.rows; i++) {
+        float tmp = matrix_pos(m, i, c1);
+        matrix_pos(m, i, c1) = matrix_pos(m, i, c2);
+        matrix_pos(m, i, c2) = tmp;
+    }
 };
 
 void martix_copy(Matrix dest, Matrix src){
