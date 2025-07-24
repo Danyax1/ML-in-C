@@ -25,9 +25,9 @@ void matrix_rand(Matrix m, float low, float high){
 }
 void matrix_fill(Matrix m, float fill){
         for(int i = 0; i < m.rows; i++){
-        for(int j = 0; j < m.cols; j++){
-            matrix_pos(m, i, j) = fill;
-        }
+            for(int j = 0; j < m.cols; j++){
+                matrix_pos(m, i, j) = fill;
+            }
     }
 };
 
@@ -61,6 +61,7 @@ void MATRIX_PRINT(Matrix m, const char *name){
         }
         printf("\n");
     }
+    printf("%*s", (int)strlen(name)+3, "");
     printf("]\n");
 }
 
@@ -96,3 +97,11 @@ void matrix_scale(Matrix m0, int scale){
         }
     }
 }
+
+void matrix_rearrange(Matrix m ,int rows, int cols){
+    assert(m.cols * m.rows == rows * cols);
+    assert(rows > 0);
+
+    m.rows = rows;
+    m.cols = cols;
+};

@@ -29,5 +29,6 @@ void MATRIX_PRINT(Matrix m, const char *name);
 void matrix_add(Matrix m0, Matrix m1);
 void matrix_mult(Matrix res, Matrix m0, Matrix m1);
 void matrix_scale(Matrix m0, int scale);
+void matrix_rearrange(Matrix m, int rows, int cols);
 
 #endif // MATRIX_LIB_H
