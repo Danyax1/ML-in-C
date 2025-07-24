@@ -1,27 +1,34 @@
 #include <time.h>
 #include "matrix_lib.h"
+#include "neural_network.h"
 
 
 int main(){
 
     srand(time(0));
 
-    // Matrix m0 = matrix_create(3, 2);
-    // matrix_rand(m0, 0, 1);
-    // matrix_print(m0);
+    // Matrix m1  = matrix_create(6, 5);
+    // Matrix m2  = matrix_create(5, 6);
+    // Matrix res = matrix_create(6, 6);
 
-    // Matrix m1 = matrix_create(2, 4);
-    // matrix_rand(m1, 0, 1);
-    // matrix_print(m1);
+    // matrix_fill(m1, 0.88);
+    // matrix_rand(m2, -2, 2);
+
+    // matrix_mult(res, m1, m2);
+
+    // matrix_print(res);
+    // printf("----------------------------\n");
+    // matrix_activate(res, sigmoid);
+    // matrix_print(res);
+
+    int arch[] = {3, 3, 3};
+    int arch_len = sizeof(arch)/sizeof(arch[0]);
+    int l_count = arch_len - 1;
     
-    Matrix result = matrix_create(3, 4);
-    matrix_rand(result, 0, 10);
-    Matrix row1 = matrix_column(result, 3);
-    // matrix_mult(result, m0, m1);
 
-    matrix_print(result);
-
-    matrix_print(row1);
+    N_Net nn = create_n_net(l_count, arch_len, arch);
+    rand_n_net(nn, 0, 10);
+    n_net_print(nn);
 
     return 0;
 }
