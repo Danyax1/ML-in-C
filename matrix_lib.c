@@ -16,6 +16,11 @@ Matrix matrix_create(int rows, int cols){
     return m;
 }
 
+void matrix_free(Matrix m){
+    assert(m.data);
+    free(m.data);
+};
+
 void matrix_rand(Matrix m, float low, float high){
     for(int i = 0; i < m.rows; i++){
         for(int j = 0; j < m.cols; j++){
@@ -28,6 +33,18 @@ void matrix_fill(Matrix m, float fill){
             for(int j = 0; j < m.cols; j++){
                 matrix_pos(m, i, j) = fill;
             }
+    }
+};
+void matrix_id(Matrix m){
+    assert(m.cols == m.rows);
+    for(int i = 0; i < m.rows; i++){
+        for(int j = 0; j < m.cols; j++){
+            if (i == j){
+                matrix_pos(m, i, j) = 1;
+            } else {
+                matrix_pos(m, i, j) = 0;
+            }
+        }
     }
 };
 
@@ -50,6 +67,16 @@ Matrix matrix_column(Matrix m, int col){
     res.data = &(m.data[(col-1)]);
     return res;
 
+};
+
+void martix_copy(Matrix dest, Matrix src){
+    assert(dest.rows == src.rows);
+    assert(dest.cols == src.cols);
+    for(int i = 0; i < dest.rows; i++){
+        for(int j = 0; j < dest.cols; j++){
+            matrix_pos(dest, i, j) = matrix_pos(src, i, j);
+        }
+    }
 };
 
 void MATRIX_PRINT(Matrix m, const char *name){
