@@ -19,10 +19,10 @@ float step(float val){
         return 1.0f;
     }
 }
-void matrix_activate(Matrix m, float (*activation)(float)){
+void mt_activate(Matrix m, float (*activation)(float)){
     for (int i = 0; i < m.rows; i++){
         for (int j = 0; j < m.cols; j++){
-            matrix_pos(m, i, j) = activation(matrix_pos(m, i, j));
+            mt_pos(m, i, j) = activation(mt_pos(m, i, j));
         }
     }
 }
@@ -33,9 +33,9 @@ N_Net create_n_net (int l_count, int arch_len, int* arch){
     Matrix* mat_arr = malloc((arch_len - 1) * sizeof(Matrix) * 3);
 
     for (int i = 0; i < l_count; i++) {
-        mat_arr[i * 3]     = matrix_create(arch[i], arch[i + 1]); // weights
-        mat_arr[i * 3 + 1] = matrix_create(1, arch[i + 1]);       // biases
-        mat_arr[i * 3 + 2] = matrix_create(1, arch[i + 1]);       // activations
+        mat_arr[i * 3]     = mt_create(arch[i], arch[i + 1]); // weights
+        mat_arr[i * 3 + 1] = mt_create(1, arch[i + 1]);       // biases
+        mat_arr[i * 3 + 2] = mt_create(1, arch[i + 1]);       // activations
     }
 
     N_Net nn={
@@ -49,7 +49,7 @@ N_Net create_n_net (int l_count, int arch_len, int* arch){
 
 void rand_n_net(N_Net nn, float low, float high){
     for (int i = 0; i < 3* nn.l_count; i++){
-        matrix_rand(nn.mats[i], low, high);
+        mt_rand(nn.mats[i], low, high);
     }
 };
 

@@ -8,7 +8,7 @@ float ReLU (float val);
 float sigmoid (float val);
 float step (float val);
 
-void matrix_activate(Matrix m, float (*activation)(float));
+void mt_activate(Matrix m, float (*activation)(float));
 
 typedef struct
 {
