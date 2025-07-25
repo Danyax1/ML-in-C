@@ -29,16 +29,16 @@ int main(){
 
     // mt_print(res);
 
-    Matrix m_det = mt_create(2, 2);
-    mt_pos(m_det, 0, 0) = 0;
-    mt_pos(m_det, 0, 1) = 1;
-    mt_pos(m_det, 1, 0) = 4;
-    mt_pos(m_det, 1, 1) = 6;
+    // Matrix m_det = mt_create(2, 2);
+    // mt_pos(m_det, 0, 0) = 0;
+    // mt_pos(m_det, 0, 1) = 1;
+    // mt_pos(m_det, 1, 0) = 4;
+    // mt_pos(m_det, 1, 1) = 6;
 
-    mt_print(m_det);
+    // mt_print(m_det);
 
-    printf("Determinant of res: %f\n", mt_det(m_det));
-    printf("----------------------------\n");
+    // printf("Determinant of res: %f\n", mt_det(m_det));
+    // printf("----------------------------\n");
     // mt_activate(res, sigmoid);
     // mt_print(res);
 
@@ -51,14 +51,14 @@ int main(){
     // mt_free(id);
     // mt_free(res);
 
-    // int arch[] = {3, 3, 3};
-    // int arch_len = sizeof(arch)/sizeof(arch[0]);
-    // int l_count = arch_len - 1;
+    int arch[] = {1, 1};
+    int arch_len = sizeof(arch)/sizeof(arch[0]);
+    int l_count = arch_len - 1;
     
 
-    // N_Net nn = create_n_net(l_count, arch_len, arch);
-    // rand_n_net(nn, 0, 10);
-    // n_net_print(nn);
+    N_Net nn = create_n_net(l_count, arch_len, arch);
+    rand_n_net(nn, 0, 10);
+    print_n_net(nn);
 
 
     return 0;

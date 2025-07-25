@@ -30,26 +30,35 @@ void mt_activate(Matrix m, float (*activation)(float)){
 N_Net create_n_net (int l_count, int arch_len, int* arch){
     assert(l_count + 1 == arch_len);
 
-    Matrix* mat_arr = malloc((arch_len - 1) * sizeof(Matrix) * 3);
+    Matrix* w_n = malloc((arch_len - 1) * sizeof(Matrix) * 3);
+    assert(w_n);
+    Matrix* b_n = malloc((arch_len - 1) * sizeof(Matrix) * 3);
+    assert(b_n);
+    Matrix* a_n = malloc((arch_len) * sizeof(Matrix) * 3);
+    assert(a_n);
 
     for (int i = 0; i < l_count; i++) {
-        mat_arr[i * 3]     = mt_create(arch[i], arch[i + 1]); // weights
-        mat_arr[i * 3 + 1] = mt_create(1, arch[i + 1]);       // biases
-        mat_arr[i * 3 + 2] = mt_create(1, arch[i + 1]);       // activations
+        w_n[i] = mt_create(arch[i], arch[i + 1]); // weights
+        b_n[i] = mt_create(1, arch[i + 1]);       // biases
     }
-
+    for (int i = 0; i < arch_len; i++){
+        a_n[i] = mt_create(1, arch[i]);       // activations
+    }
     N_Net nn={
         .l_count  = l_count,
         .arch_len = arch_len,
         .arch     = arch,
-        .mats     = mat_arr
+        .w_n      = w_n,
+        .b_n      = b_n,
+        .a_n      = a_n,
     };
     return nn;
 };
 
 void rand_n_net(N_Net nn, float low, float high){
-    for (int i = 0; i < 3* nn.l_count; i++){
-        mt_rand(nn.mats[i], low, high);
+    for (int i = 0; i < nn.l_count; i++){
+        mt_rand(nn.w_n[i], low, high);
+        mt_rand(nn.b_n[i], low, high);
     }
 };
 
@@ -57,18 +66,25 @@ void rand_n_net(N_Net nn, float low, float high){
 void N_NET_PRINT(N_Net nn, const char *name){
     printf("%s = {{\n", name);
 
-    for (int i = 1; i < nn.arch_len; i++){
+    printf("    ");
+    MATRIX_PRINT(input_n_net(nn), "a_in");
+
+    char label[64];
+
+    for (int i = 0; i < nn.l_count; i++) {
         printf("    ");
-        MATRIX_PRINT(nn.mats[(i-1)*3], "w_n");
+        snprintf(label, sizeof(label), "w_%d", i);
+        MATRIX_PRINT(nn.w_n[i], label);
         printf("\n");
 
         printf("    ");
-        MATRIX_PRINT(nn.mats[(i-1)*3 + 1], "b_n");
+        snprintf(label, sizeof(label), "b_%d", i);
+        MATRIX_PRINT(nn.b_n[i], label);
         printf("\n");
 
-        printf("    ");
-        MATRIX_PRINT(nn.mats[(i-1)*3 + 2], "a_n");
-        printf("\n");
     }
+    printf("    ");
+    MATRIX_PRINT(output_n_net(nn), "a_out");
+
     printf("}}\n");
 };
