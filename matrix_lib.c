@@ -16,10 +16,13 @@ Matrix mt_create(int rows, int cols){
     return m;
 }
 
-void mt_free(Matrix m){
-    assert(m.data);
-    free(m.data);
-};
+void mt_free(Matrix *m) {
+    if (m->data) {
+        free(m->data);
+        m->data = NULL;  // prevent double free
+    }
+}
+
 
 void mt_rand(Matrix m, float low, float high){
     for(int i = 0; i < m.rows; i++){
@@ -35,6 +38,12 @@ void mt_fill(Matrix m, float fill){
             }
     }
 };
+void mt_set(Matrix *m, float* matr, int rows, int cols) {
+    assert(m->rows == rows);
+    assert(m->cols == cols);
+    m->data = matr;
+}
+
 void mt_id(Matrix m){
     assert(m.cols == m.rows);
     for(int i = 0; i < m.rows; i++){
@@ -193,10 +202,10 @@ float mt_det(Matrix m){
 
 
 
-void mt_rearrange(Matrix m ,int rows, int cols){
-    assert(m.cols * m.rows == rows * cols);
+void mt_rearrange(Matrix *m, int rows, int cols) {
+    assert(m->cols * m->rows == rows * cols);
     assert(rows > 0);
 
-    m.rows = rows;
-    m.cols = cols;
-};
+    m->rows = rows;
+    m->cols = cols;
+}

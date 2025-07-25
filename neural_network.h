@@ -30,5 +30,8 @@ N_Net create_n_net(int l_count, int arch_len, int* arch);
 void rand_n_net(N_Net nn, float low, float high);
 void N_NET_PRINT(N_Net nn, const char *name);
 
+void set_n_net_input(N_Net nn, Matrix m);
+void forward_n_net(N_Net nn);
+
 
 #endif //NN_LIB_H

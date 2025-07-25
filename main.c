@@ -48,16 +48,30 @@ int main(){
     // mt_print(id);
 
 
-    // mt_free(id);
-    // mt_free(res);
+    // mt_free(&id);
+    // mt_free(&res);
+    float model[][2]={
+        {1, 1},
+        {0, 0},
+        {0, 1},
+        {1, 0},
+    };
+    Matrix samples = mt_create(4, 2);
+    mt_set(&samples, (float*)model, 4, 2);
+    mt_print(samples);
 
-    int arch[] = {1, 1};
+    
+
+
+    int arch[] = {2, 2, 1};
     int arch_len = sizeof(arch)/sizeof(arch[0]);
     int l_count = arch_len - 1;
     
 
     N_Net nn = create_n_net(l_count, arch_len, arch);
-    rand_n_net(nn, 0, 10);
+    rand_n_net(nn, -5, 5);
+    set_n_net_input(nn, mt_row(samples, 1));
+    forward_n_net(nn);
     print_n_net(nn);
 
 

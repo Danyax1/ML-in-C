@@ -21,10 +21,11 @@ typedef struct {
 #define mt_pos(m, i, j) (m).data[(i)*((m).stride)+(j)]
 
 Matrix mt_create(int rows, int cols);
-void mt_free(Matrix m);
+void mt_free(Matrix *m);
 
 void mt_rand(Matrix m, float low, float high);
 void mt_fill(Matrix m, float fill);
+void mt_set(Matrix *m, float* matr, int rows, int cols);
 void mt_id(Matrix m);
 
 Matrix mt_row(Matrix m, int row);
@@ -40,6 +41,6 @@ void mt_mult(Matrix res, Matrix m0, Matrix m1);
 void mt_scale(Matrix m0, int scale);
 float mt_det(Matrix m);
 
-void mt_rearrange(Matrix m, int rows, int cols);
+void mt_rearrange(Matrix *m, int rows, int cols);
 
 #endif // MATRIX_LIB_H
