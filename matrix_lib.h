@@ -32,12 +32,13 @@ Matrix mt_column(Matrix m, int col);
 void mt_swap_row(Matrix m, int r1, int r2);
 void mt_swap_col(Matrix m, int c1, int c2);
 
-void martix_copy(Matrix dest, Matrix src);
+void mt_copy(Matrix dest, Matrix src);
 void MATRIX_PRINT(Matrix m, const char *name);
 
 void mt_add(Matrix m0, Matrix m1);
 void mt_mult(Matrix res, Matrix m0, Matrix m1);
 void mt_scale(Matrix m0, int scale);
+float mt_det(Matrix m);
 
 void mt_rearrange(Matrix m, int rows, int cols);
 

@@ -93,7 +93,7 @@ void mt_swap_col(Matrix m, int c1, int c2){
     }
 };
 
-void martix_copy(Matrix dest, Matrix src){
+void mt_copy(Matrix dest, Matrix src){
     assert(dest.rows == src.rows);
     assert(dest.cols == src.cols);
     for(int i = 0; i < dest.rows; i++){
@@ -148,6 +148,50 @@ void mt_scale(Matrix m0, int scale){
         }
     }
 }
+
+float mt_det(Matrix m){
+    assert(m.cols == m.rows);
+    int n = m.cols;
+    int sign = 1;
+    Matrix U = mt_create(n, n);
+    mt_copy(U, m);
+
+    for(int i = 0; i < n; i++){
+        
+        int pivot  = i;
+        while(mt_pos(U, i, i) == 0 && pivot < n){
+            if (mt_pos(U, pivot, i)){
+                // printf("SWAPPING i: %d, pivot: %d\n", i, pivot);
+                mt_swap_row(U, i, pivot);
+                break;
+            }
+            pivot++;
+        }
+        if (pivot != i){
+            sign *= -1;
+        }
+        if (!mt_pos(U, i, i)){
+            // printf("1 col is all 0");
+            return 0;
+        }
+        // mt_print(U);
+        for(int j = i+1; j < n; j++){
+            float coef = mt_pos(U, j, i)/mt_pos(U, i, i);
+            // printf("i: %d, j: %d, coef: %f\n", i, j, coef);
+            for(int k = i; k < n; k++){
+                // printf("U[j][k] = %d", );
+                mt_pos(U ,j, k) -= coef * mt_pos(U, i, k);
+            }
+        }
+    }
+    float det = 1.0f;
+    for(int i = 0; i < n; i++){
+        det *= mt_pos(U, i ,i);
+    }
+    return det * sign;
+};
+
+
 
 void mt_rearrange(Matrix m ,int rows, int cols){
     assert(m.cols * m.rows == rows * cols);
