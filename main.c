@@ -56,6 +56,12 @@ int main(){
         {0, 1},
         {1, 0},
     };
+    float res[]={
+        1, 0, 0, 1
+    };
+    Matrix expect = mt_create(1, 4);
+    mt_set(&expect, (float*)res, 1, 4);
+    mt_print(expect);
     Matrix samples = mt_create(4, 2);
     mt_set(&samples, (float*)model, 4, 2);
     mt_print(samples);
@@ -63,16 +69,19 @@ int main(){
     
 
 
-    int arch[] = {2, 2, 1};
+    int arch[] = {2, 2, 4};
     int arch_len = sizeof(arch)/sizeof(arch[0]);
     int l_count = arch_len - 1;
     
 
     N_Net nn = create_n_net(l_count, arch_len, arch);
-    rand_n_net(nn, -5, 5);
+    rand_n_net(nn, -3, 3);
     set_n_net_input(nn, mt_row(samples, 1));
     forward_n_net(nn);
     print_n_net(nn);
+
+    float mse = loss_n_net(nn, expect);
+    printf("mse = %f\n", mse);
 
 
     return 0;

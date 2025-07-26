@@ -89,11 +89,11 @@ void N_NET_PRINT(N_Net nn, const char *name){
     printf("}}\n");
 };
 
-void set_n_net_input(N_Net nn, Matrix m){
-    assert(m.rows == 1);
-    assert(nn.arch[0] == m.cols);
+void set_n_net_input(N_Net nn, Matrix input){
+    assert(input.rows == 1);
+    assert(nn.arch[0] == input.cols);
 
-    mt_copy(nn.a_n[0], m);
+    mt_copy(nn.a_n[0], input);
 };
 void forward_n_net(N_Net nn){
     for(int i = 0; i < nn.l_count; i++){
@@ -101,4 +101,18 @@ void forward_n_net(N_Net nn){
         mt_add(nn.a_n[i+1], nn.b_n[i]);
         mt_activate(nn.a_n[i+1], sigmoid);
     }
+};
+
+float loss_n_net(N_Net nn, Matrix expect){
+    //note: neural net should be pre-forwarded
+    assert(expect.rows == 1);
+    assert(expect.cols == (output_n_net(nn)).cols);
+
+    float diff = 0.0f;
+    for (int i = 0; i < expect.cols; i++){
+        float v1 = mt_pos(output_n_net(nn), 0, i);
+        float v2 = mt_pos(expect, 0, i);
+        diff += (v1 - v2)*(v1 - v2);
+    }
+    return diff;
 };
