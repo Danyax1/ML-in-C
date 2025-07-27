@@ -5,7 +5,7 @@
 
 int main(){
 
-    srand(time(0));
+    srand(1);
 
     // Matrix m1  = mt_create(6, 5);
     // Matrix m2  = mt_create(5, 6);
@@ -57,10 +57,10 @@ int main(){
         {1, 0},
     };
     float res[]={
-        1, 0, 0, 1
+        1
     };
-    Matrix expect = mt_create(1, 4);
-    mt_set(&expect, (float*)res, 1, 4);
+    Matrix expect = mt_create(1, 1);
+    mt_set(&expect, (float*)res, 1, 1);
     mt_print(expect);
     Matrix samples = mt_create(4, 2);
     mt_set(&samples, (float*)model, 4, 2);
@@ -69,7 +69,7 @@ int main(){
     
 
 
-    int arch[] = {2, 2, 4};
+    int arch[] = {2, 2, 1};
     int arch_len = sizeof(arch)/sizeof(arch[0]);
     int l_count = arch_len - 1;
     
@@ -80,9 +80,18 @@ int main(){
     forward_n_net(nn);
     print_n_net(nn);
 
+    float rate = 1e-1;
+    N_Net grad = create_n_net(l_count, arch_len, arch);
+    rand_n_net(grad, -3, 3);
+
+
+
     float mse = loss_n_net(nn, expect);
     printf("mse = %f\n", mse);
 
-
+    learn_n_net(nn, grad, rate);
+    print_n_net(grad);
+    forward_n_net(nn);
+    print_n_net(nn);
     return 0;
 }

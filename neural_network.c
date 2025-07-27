@@ -116,3 +116,20 @@ float loss_n_net(N_Net nn, Matrix expect){
     }
     return diff;
 };
+
+void learn_n_net(N_Net nn, N_Net grad, float rate){
+    //aplies gradient to neural network
+    //it is actually -grad, so i can just use mt_add
+    assert(rate > 0);
+    assert(nn.arch_len == grad.arch_len);
+    for (int i = 0; i < nn.arch_len; i++){
+        assert(nn.arch[i]==grad.arch[i]);
+    }
+    for (int i = 0; i < nn.l_count; i++){
+        mt_print(grad.w_n[i]);
+        mt_scale(grad.w_n[i], rate);
+        mt_scale(grad.b_n[i], rate);
+        mt_add(nn.w_n[i], grad.w_n[i]);
+        mt_add(nn.b_n[i], grad.b_n[i]);
+    }
+}

@@ -150,7 +150,7 @@ void mt_mult(Matrix res, Matrix m0, Matrix m1){
     }
 }
 
-void mt_scale(Matrix m0, int scale){
+void mt_scale(Matrix m0, float scale){
     for(int i = 0; i < m0.rows; i++){
         for(int j = 0; j < m0.cols; j++){
             mt_pos(m0, i, j) *= scale;

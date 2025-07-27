@@ -38,7 +38,7 @@ void MATRIX_PRINT(Matrix m, const char *name);
 
 void mt_add(Matrix m0, Matrix m1);
 void mt_mult(Matrix res, Matrix m0, Matrix m1);
-void mt_scale(Matrix m0, int scale);
+void mt_scale(Matrix m0, float scale);
 float mt_det(Matrix m);
 
 void mt_rearrange(Matrix *m, int rows, int cols);
