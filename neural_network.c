@@ -30,11 +30,11 @@ void mt_activate(Matrix m, float (*activation)(float)){
 N_Net create_n_net (int l_count, int arch_len, int* arch){
     assert(l_count + 1 == arch_len);
 
-    Matrix* w_n = malloc((arch_len - 1) * sizeof(Matrix) * 3);
+    Matrix* w_n = malloc((arch_len - 1) * sizeof(Matrix));
     assert(w_n);
-    Matrix* b_n = malloc((arch_len - 1) * sizeof(Matrix) * 3);
+    Matrix* b_n = malloc((arch_len - 1) * sizeof(Matrix));
     assert(b_n);
-    Matrix* a_n = malloc((arch_len) * sizeof(Matrix) * 3);
+    Matrix* a_n = malloc((arch_len) * sizeof(Matrix));
     assert(a_n);
 
     for (int i = 0; i < l_count; i++) {
@@ -118,7 +118,7 @@ float loss_n_net(N_Net nn, Matrix expect){
 };
 
 void learn_n_net(N_Net nn, N_Net grad, float rate){
-    //aplies gradient to neural network
+    //applies gradient to neural network
     //it is actually -grad, so i can just use mt_add
     assert(rate > 0);
     assert(nn.arch_len == grad.arch_len);
@@ -126,7 +126,6 @@ void learn_n_net(N_Net nn, N_Net grad, float rate){
         assert(nn.arch[i]==grad.arch[i]);
     }
     for (int i = 0; i < nn.l_count; i++){
-        mt_print(grad.w_n[i]);
         mt_scale(grad.w_n[i], rate);
         mt_scale(grad.b_n[i], rate);
         mt_add(nn.w_n[i], grad.w_n[i]);

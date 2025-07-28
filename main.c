@@ -2,6 +2,9 @@
 #include "matrix_lib.h"
 #include "neural_network.h"
 
+#define N_SAMPLES 4
+#define INPUT_SIZE 2
+#define OUTPUT_SIZE 1
 
 int main(){
 
@@ -50,22 +53,20 @@ int main(){
 
     // mt_free(&id);
     // mt_free(&res);
-    float model[][2]={
-        {1, 1},
-        {0, 0},
-        {0, 1},
-        {1, 0},
-    };
-    float res[]={
-        1
-    };
-    Matrix expect = mt_create(1, 1);
-    mt_set(&expect, (float*)res, 1, 1);
-    mt_print(expect);
-    Matrix samples = mt_create(4, 2);
-    mt_set(&samples, (float*)model, 4, 2);
-    mt_print(samples);
 
+    float dataset[N_SAMPLES][INPUT_SIZE + OUTPUT_SIZE] = {
+        {0, 0, 1},
+        {0, 1, 1},
+        {1, 0, 1},
+        {1, 1, 0},
+    };
+
+    Matrix inputs = mt_create(N_SAMPLES, INPUT_SIZE);
+    Matrix outputs = mt_create(N_SAMPLES, OUTPUT_SIZE);
+
+    split_dataset(&dataset[0][0], INPUT_SIZE, OUTPUT_SIZE, N_SAMPLES, inputs, outputs);
+    //  mt_print(inputs);
+    //  mt_print(outputs);
     
 
 
@@ -76,22 +77,23 @@ int main(){
 
     N_Net nn = create_n_net(l_count, arch_len, arch);
     rand_n_net(nn, -3, 3);
-    set_n_net_input(nn, mt_row(samples, 1));
-    forward_n_net(nn);
-    print_n_net(nn);
 
-    float rate = 1e-1;
-    N_Net grad = create_n_net(l_count, arch_len, arch);
-    rand_n_net(grad, -3, 3);
+    for(int i = 0; i < 1; i++){
+        set_n_net_input(nn, mt_row(inputs, 1));
+        forward_n_net(nn);
+        // print_n_net(nn);
 
+        float rate = 1e-1;
+        N_Net grad = create_n_net(l_count, arch_len, arch);
+        // rand_n_net(grad, -3, 3);                                                           // to be removed
 
+        float mse = loss_n_net(nn, mt_row(outputs, 1));
+        printf("mse = %f\n", mse);
 
-    float mse = loss_n_net(nn, expect);
-    printf("mse = %f\n", mse);
-
-    learn_n_net(nn, grad, rate);
-    print_n_net(grad);
-    forward_n_net(nn);
-    print_n_net(nn);
+        // learn_n_net(nn, grad, rate);
+        print_n_net(grad);
+        forward_n_net(nn);
+        // print_n_net(nn);
+    }
     return 0;
 }

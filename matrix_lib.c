@@ -11,7 +11,7 @@ Matrix mt_create(int rows, int cols){
     m.rows = rows;
     m.cols = cols;
     m.stride = cols;
-    m.data = (float*) malloc(sizeof(float) * rows * cols);
+    m.data = (float*) calloc(rows * cols, sizeof(float) );
     assert(m.data != NULL);
     return m;
 }
@@ -200,12 +200,22 @@ float mt_det(Matrix m){
     return det * sign;
 };
 
-
-
 void mt_rearrange(Matrix *m, int rows, int cols) {
     assert(m->cols * m->rows == rows * cols);
     assert(rows > 0);
 
     m->rows = rows;
     m->cols = cols;
+}
+
+void split_dataset(float* data, int input_size, int output_size, int n_samples, Matrix input, Matrix output) {
+    int total = input_size + output_size;
+    for (int i = 0; i < n_samples; i++) {
+        for (int j = 0; j < input_size; j++) {
+            mt_pos(input, i, j) = data[i * total + j];
+        }
+        for (int j = 0; j < output_size; j++) {
+            mt_pos(output, i, j) = data[i * total + input_size + j];
+        }
+    }
 }
