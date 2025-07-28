@@ -33,6 +33,7 @@ void N_NET_PRINT(N_Net nn, const char *name);
 void set_n_net_input(N_Net nn, Matrix input);
 void forward_n_net(N_Net nn);
 float loss_n_net(N_Net nn, Matrix expect);
+void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output);
 void learn_n_net(N_Net nn, N_Net grad, float rate);
 
 

@@ -8,7 +8,7 @@
 
 int main(){
 
-    srand(1);
+    srand(time(0));
 
     // Matrix m1  = mt_create(6, 5);
     // Matrix m2  = mt_create(5, 6);
@@ -77,23 +77,35 @@ int main(){
 
     N_Net nn = create_n_net(l_count, arch_len, arch);
     rand_n_net(nn, -3, 3);
+    N_Net grad = create_n_net(l_count, arch_len, arch);
 
-    for(int i = 0; i < 1; i++){
-        set_n_net_input(nn, mt_row(inputs, 1));
-        forward_n_net(nn);
-        // print_n_net(nn);
+    for(int iter = 0; iter < 1000; iter++){
 
-        float rate = 1e-1;
-        N_Net grad = create_n_net(l_count, arch_len, arch);
-        // rand_n_net(grad, -3, 3);                                                           // to be removed
+        float loss = 0;
 
-        float mse = loss_n_net(nn, mt_row(outputs, 1));
-        printf("mse = %f\n", mse);
+        for(int i = 0; i < N_SAMPLES; i++){
+            set_n_net_input(nn, mt_row(inputs, i));
+            forward_n_net(nn);
+            // print_n_net(nn);
 
-        // learn_n_net(nn, grad, rate);
-        print_n_net(grad);
-        forward_n_net(nn);
-        // print_n_net(nn);
+            float rate = 1;
+            
+
+            float mse = loss_n_net(nn, mt_row(outputs, 1));
+            loss += mse;
+            backprop_n_net(nn, grad, inputs, outputs);
+            learn_n_net(nn, grad, rate);
+            // print_n_net(grad);
+            forward_n_net(nn);
+            // print_n_net(nn);
+        }
+
+        printf("%-6d loss: %f\n", iter, loss/N_SAMPLES);
     }
+    printf("------------------------------\n");
+    for(int i = 0; i < inputs.rows; i++){
+        printf("%d @ %d = %f\n", (int)dataset[i][0],(int)dataset[i][1], mt_pos(output_n_net(nn), 0, i));
+    }
+
     return 0;
 }

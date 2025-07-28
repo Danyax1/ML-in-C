@@ -117,14 +117,53 @@ float loss_n_net(N_Net nn, Matrix expect){
     return diff;
 };
 
+void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output){
+    assert(input.rows == output.rows);
+    int n = input.rows;
+    for(int sample = 0; sample < n; sample++){
+        set_n_net_input(nn, mt_row(input, sample));
+        forward_n_net(nn);
+
+        for(int i = 0; i <= nn.l_count; i++){
+            mt_fill(grad.a_n[i], 0);
+        }
+        for(int g = 0; g < output.cols; g++){
+            mt_pos(output_n_net(grad), 0, g) =  mt_pos(output_n_net(nn), 0, g) - mt_pos(output, sample, g);
+        }
+
+        for (int l = nn.l_count; l > 0; l--){
+            for(int j = 0; j < nn.a_n[l].cols; j++){
+                float a = mt_pos(nn.a_n[l], 0, j);
+                float da = mt_pos(grad.a_n[l], 0, j);
+                mt_pos(grad.b_n[l-1], 0, j) += 2*a*da*(1-a);
+                for(int k = 0; k < nn.a_n[l-1].cols; k++){
+                    float pa = mt_pos(nn.a_n[l-1], 0, k);
+                    float w = mt_pos(nn.w_n[l-1], k, j);
+
+                    mt_pos(grad.w_n[l-1], k, j) += 2*da*a*(1-a)*pa;
+                    mt_pos(grad.w_n[l-1], 0, k) += 2*da*a*(1-a)*w;
+                }
+            }
+        }
+    }
+    for(int i = 0; i < grad.l_count; i++){
+        for(int j = 0; j < grad.w_n[i].rows; j++){
+            for(int k = 0; k < grad.w_n[i].cols; k++){
+                mt_pos(grad.w_n[i], j, k) /= n;
+            }
+        }
+        for(int j = 0; j < 1; j++){
+            for(int k = 0; k < grad.b_n[i].cols; k++){
+                mt_pos(grad.b_n[i], 0, k) /= n;
+            }
+        }
+    }
+};
+
 void learn_n_net(N_Net nn, N_Net grad, float rate){
     //applies gradient to neural network
-    //it is actually -grad, so i can just use mt_add
-    assert(rate > 0);
     assert(nn.arch_len == grad.arch_len);
-    for (int i = 0; i < nn.arch_len; i++){
-        assert(nn.arch[i]==grad.arch[i]);
-    }
+
     for (int i = 0; i < nn.l_count; i++){
         mt_scale(grad.w_n[i], rate);
         mt_scale(grad.b_n[i], rate);

@@ -135,6 +135,16 @@ void mt_add(Matrix m0, Matrix m1){
     }
 }
 
+void mt_sub(Matrix m0, Matrix m1){
+    assert(m0.cols == m1.cols);
+    assert(m0.rows == m1.rows);
+    for(int i = 0; i < m0.rows; i++){
+        for(int j = 0; j < m0.cols; j++){
+            mt_pos(m0, i, j) = mt_pos(m1, i, j);
+        }
+    }
+}
+
 void mt_mult(Matrix res, Matrix m0, Matrix m1){
     assert(m0.cols == m1.rows);
     assert(m0.rows == res.rows);
@@ -209,6 +219,8 @@ void mt_rearrange(Matrix *m, int rows, int cols) {
 }
 
 void split_dataset(float* data, int input_size, int output_size, int n_samples, Matrix input, Matrix output) {
+    assert(input.rows == output.rows);
+
     int total = input_size + output_size;
     for (int i = 0; i < n_samples; i++) {
         for (int j = 0; j < input_size; j++) {
