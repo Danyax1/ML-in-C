@@ -117,48 +117,65 @@ float loss_n_net(N_Net nn, Matrix expect){
     return diff;
 };
 
-void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output){
+void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output) {
     assert(input.rows == output.rows);
     int n = input.rows;
-    for(int sample = 0; sample < n; sample++){
+
+    // Clear gradients
+    for (int i = 0; i < grad.l_count; i++) {
+        mt_fill(grad.w_n[i], 0);
+        mt_fill(grad.b_n[i], 0);
+    }
+
+    for (int sample = 0; sample < n; sample++) {
         set_n_net_input(nn, mt_row(input, sample));
         forward_n_net(nn);
 
-        for(int i = 0; i <= nn.l_count; i++){
+        for (int i = 0; i <= nn.l_count; i++) {
             mt_fill(grad.a_n[i], 0);
         }
-        for(int g = 0; g < output.cols; g++){
-            mt_pos(output_n_net(grad), 0, g) =  mt_pos(output_n_net(nn), 0, g) - mt_pos(output, sample, g);
+
+        for (int j = 0; j < output.cols; j++) {
+            float a = mt_pos(nn.a_n[nn.l_count], 0, j);
+            float y = mt_pos(output, sample, j);
+            float delta = 2 * (a - y) * a * (1 - a); 
+            mt_pos(grad.a_n[nn.l_count], 0, j) = delta;
         }
 
-        for (int l = nn.l_count; l > 0; l--){
-            for(int j = 0; j < nn.a_n[l].cols; j++){
-                float a = mt_pos(nn.a_n[l], 0, j);
-                float da = mt_pos(grad.a_n[l], 0, j);
-                mt_pos(grad.b_n[l-1], 0, j) += 2*a*da*(1-a);
-                for(int k = 0; k < nn.a_n[l-1].cols; k++){
-                    float pa = mt_pos(nn.a_n[l-1], 0, k);
-                    float w = mt_pos(nn.w_n[l-1], k, j);
+        for (int l = nn.l_count; l > 0; l--) {
+            Matrix a_prev = nn.a_n[l - 1];
+            Matrix delta_curr = grad.a_n[l];
 
-                    mt_pos(grad.w_n[l-1], k, j) += 2*da*a*(1-a)*pa;
-                    mt_pos(grad.w_n[l-1], 0, k) += 2*da*a*(1-a)*w;
+            for (int j = 0; j < nn.a_n[l].cols; j++) {
+                float delta = mt_pos(delta_curr, 0, j);
+
+                // Bias gradient
+                mt_pos(grad.b_n[l - 1], 0, j) += delta;
+
+                for (int k = 0; k < a_prev.cols; k++) {
+                    float a = mt_pos(a_prev, 0, k);
+                    mt_pos(grad.w_n[l - 1], k, j) += delta * a;
+
+                    float w = mt_pos(nn.w_n[l - 1], k, j);
+                    float prev_a = mt_pos(a_prev, 0, k);
+                    mt_pos(grad.a_n[l - 1], 0, k) += delta * w * prev_a * (1 - prev_a);
                 }
             }
         }
     }
-    for(int i = 0; i < grad.l_count; i++){
-        for(int j = 0; j < grad.w_n[i].rows; j++){
-            for(int k = 0; k < grad.w_n[i].cols; k++){
+
+    for (int i = 0; i < grad.l_count; i++) {
+        for (int j = 0; j < grad.w_n[i].rows; j++) {
+            for (int k = 0; k < grad.w_n[i].cols; k++) {
                 mt_pos(grad.w_n[i], j, k) /= n;
             }
         }
-        for(int j = 0; j < 1; j++){
-            for(int k = 0; k < grad.b_n[i].cols; k++){
-                mt_pos(grad.b_n[i], 0, k) /= n;
-            }
+        for (int j = 0; j < grad.b_n[i].cols; j++) {
+            mt_pos(grad.b_n[i], 0, j) /= n;
         }
     }
-};
+}
+
 
 void learn_n_net(N_Net nn, N_Net grad, float rate){
     //applies gradient to neural network
