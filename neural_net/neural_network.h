@@ -27,6 +27,7 @@ typedef struct
 #define output_n_net(nn) ((nn).a_n[(nn).l_count])
 
 N_Net create_n_net(int l_count, int arch_len, int* arch);
+void free_n_net(N_Net *nn);
 void rand_n_net(N_Net nn, float low, float high);
 void N_NET_PRINT(N_Net nn, const char *name);
 

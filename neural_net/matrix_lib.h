@@ -43,5 +43,5 @@ void mt_scale(Matrix m0, float scale);
 float mt_det(Matrix m);
 
 void mt_rearrange(Matrix *m, int rows, int cols);
-void split_dataset(float* data, int input_size, int output_size, int n_samples, Matrix input, Matrix output);
+void split_dataset(const float* data, int input_size, int output_size, int n_samples, Matrix input, Matrix output);
 #endif // MATRIX_LIB_H

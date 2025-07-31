@@ -1,6 +1,7 @@
 #include "neural_network.h"
 
-float ReLU (float val){
+
+float ReLU (const float val){
     if (val <= 0){
         return 0.0f;
     } else {
@@ -54,6 +55,28 @@ N_Net create_n_net (int l_count, int arch_len, int* arch){
     };
     return nn;
 };
+void free_n_net(N_Net *nn) {
+    if (!nn) return;
+
+    for (int i = 0; i < nn->l_count; i++) {
+        mt_free(&nn->w_n[i]);
+        mt_free(&nn->b_n[i]);
+    }
+
+    for (int i = 0; i < nn->arch_len; i++) {
+        mt_free(&nn->a_n[i]);
+    }
+
+    free(nn->w_n);
+    free(nn->b_n);
+    free(nn->a_n);
+
+    nn->w_n = NULL;
+    nn->b_n = NULL;
+    nn->a_n = NULL;
+    nn->l_count = 0;
+    nn->arch_len = 0;
+}
 
 void rand_n_net(N_Net nn, float low, float high){
     for (int i = 0; i < nn.l_count; i++){
@@ -167,11 +190,11 @@ void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output) {
     for (int i = 0; i < grad.l_count; i++) {
         for (int j = 0; j < grad.w_n[i].rows; j++) {
             for (int k = 0; k < grad.w_n[i].cols; k++) {
-                mt_pos(grad.w_n[i], j, k) /= n;
+                mt_pos(grad.w_n[i], j, k) /= (float)n;
             }
         }
         for (int j = 0; j < grad.b_n[i].cols; j++) {
-            mt_pos(grad.b_n[i], 0, j) /= n;
+            mt_pos(grad.b_n[i], 0, j) /= (float)n;
         }
     }
 }
