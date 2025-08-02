@@ -57,7 +57,7 @@ void mt_id(const Matrix m){
     }
 };
 
-Matrix mt_row(Matrix m, int row){
+Matrix mt_row(const Matrix m, const int row){
     assert(row < m.rows);
     assert(row >= 0);
     Matrix res;

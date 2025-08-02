@@ -10,52 +10,52 @@ int main(){
 
     srand(time(0));
 
-    // Matrix m1  = mt_create(6, 5);
-    // Matrix m2  = mt_create(5, 6);
-    // Matrix res = mt_create(6, 6);
-    //
-    // mt_fill(m1, 1);
-    // mt_fill(m2, -2);
-    //
-    // mt_print(m2);
-    // mt_swap_row(m2, 4, 2);
-    // mt_print(m2);
-    // Matrix m = mt_create(3, 3);
-    // for (int i = 0; i < 3; i++)
-    //     for (int j = 0; j < 3; j++)
-    //         mt_pos(m, i, j) = i * 10 + j;
-    //
-    // mt_print(m);
-    // mt_swap_col(m, 0, 2);
-    // mt_print(m);
-    // mt_mult(res, m1, m2);
-    //
-    // mt_print(res);
-    //
-    // Matrix m_det = mt_create(2, 2);
-    // mt_pos(m_det, 0, 0) = 0;
-    // mt_pos(m_det, 0, 1) = 1;
-    // mt_pos(m_det, 1, 0) = 4;
-    // mt_pos(m_det, 1, 1) = 6;
-    //
-    // mt_print(m_det);
-    //
-    // printf("Determinant of res: %f\n", mt_det(m_det));
-    // printf("----------------------------\n");
-    // mt_activate(res, sigmoid);
-    // mt_print(res);
-    //
-    // Matrix id = mt_create(6, 6);;
-    // mt_id(res);
-    // mt_copy(id, res);
-    // mt_print(id);
-    //
-    // mt_free(&m);
-    // mt_free(&m1);
-    // mt_free(&m2);
-    // mt_free(&m_det);
-    // mt_free(&id);
-    // mt_free(&res);
+    Matrix m1  = mt_create(6, 5);
+    Matrix m2  = mt_create(5, 6);
+    Matrix res = mt_create(6, 6);
+    
+    mt_fill(m1, 1);
+    mt_fill(m2, -2);
+    
+    mt_print(m2);
+    mt_swap_row(m2, 4, 2);
+    mt_print(m2);
+    Matrix m = mt_create(3, 3);
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            mt_pos(m, i, j) = i * 10 + j;
+    
+    mt_print(m);
+    mt_swap_col(m, 0, 2);
+    mt_print(m);
+    mt_mult(res, m1, m2);
+    
+    mt_print(res);
+    
+    Matrix m_det = mt_create(2, 2);
+    mt_pos(m_det, 0, 0) = 0;
+    mt_pos(m_det, 0, 1) = 1;
+    mt_pos(m_det, 1, 0) = 4;
+    mt_pos(m_det, 1, 1) = 6;
+    
+    mt_print(m_det);
+    
+    printf("Determinant of res: %f\n", mt_det(m_det));
+    printf("----------------------------\n");
+    mt_activate(res, sigmoid);
+    mt_print(res);
+    
+    Matrix id = mt_create(6, 6);;
+    mt_id(res);
+    mt_copy(id, res);
+    mt_print(id);
+    
+    mt_free(&m);
+    mt_free(&m1);
+    mt_free(&m2);
+    mt_free(&m_det);
+    mt_free(&id);
+    mt_free(&res);
 
     float dataset[N_SAMPLES][INPUT_SIZE + OUTPUT_SIZE] = {
       // A1 A0 B1 B0|Sum
@@ -123,10 +123,10 @@ int main(){
         float out = mt_pos(output_n_net(nn), 0, 0);
         printf("%d%d + %d%d = %f\n", (int)dataset[i][0], (int)dataset[i][1], (int)dataset[i][2],(int)dataset[i][3], out*6.0f);
     }
-    // free_n_net(&nn);
-    // free_n_net(&grad);
-    // mt_free(&inputs);
-    // mt_free(&outputs);
+    free_n_net(&nn);
+    free_n_net(&grad);
+    mt_free(&inputs);
+    mt_free(&outputs);
 
     return 0;
 }

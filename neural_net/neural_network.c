@@ -1,26 +1,17 @@
 #include "neural_network.h"
 
-
-float ReLU (const float val){
-    if (val <= 0){
-        return 0.0f;
-    } else {
-        return val;
-    }
+inline float ReLU (const float val){
+    return (val <= 0) ?  0.0f : val;
 }
 
-float sigmoid(float val){
+inline float sigmoid(const float val){
     return 1 / (1 +expf(-val));
 }
 
-float step(float val){
-    if (val < 0){
-        return 0.0f;
-    }else {
-        return 1.0f;
-    }
+inline float step(const float val){
+    return (val <= 0) ?  0.0f : 1.0f;
 }
-void mt_activate(Matrix m, float (*activation)(float)){
+void mt_activate(const Matrix m, float (*activation)(float)){
     for (int i = 0; i < m.rows; i++){
         for (int j = 0; j < m.cols; j++){
             mt_pos(m, i, j) = activation(mt_pos(m, i, j));
@@ -28,7 +19,7 @@ void mt_activate(Matrix m, float (*activation)(float)){
     }
 }
 
-N_Net create_n_net (int l_count, int arch_len, int* arch){
+N_Net create_n_net (const int l_count, const int arch_len, int* arch){
     assert(l_count + 1 == arch_len);
 
     Matrix* w_n = malloc((arch_len - 1) * sizeof(Matrix));
@@ -78,7 +69,7 @@ void free_n_net(N_Net *nn) {
     nn->arch_len = 0;
 }
 
-void rand_n_net(N_Net nn, float low, float high){
+void rand_n_net(const N_Net nn, const float low, const float high){
     for (int i = 0; i < nn.l_count; i++){
         mt_rand(nn.w_n[i], low, high);
         mt_rand(nn.b_n[i], low, high);
@@ -86,7 +77,7 @@ void rand_n_net(N_Net nn, float low, float high){
 };
 
 
-void N_NET_PRINT(N_Net nn, const char *name){
+void N_NET_PRINT(const N_Net nn, const char *name){
     printf("%s = {{\n", name);
 
     printf("    ");
@@ -112,13 +103,13 @@ void N_NET_PRINT(N_Net nn, const char *name){
     printf("}}\n");
 };
 
-void set_n_net_input(N_Net nn, Matrix input){
+void set_n_net_input(const N_Net nn, const Matrix input){
     assert(input.rows == 1);
     assert(nn.arch[0] == input.cols);
 
     mt_copy(nn.a_n[0], input);
 };
-void forward_n_net(N_Net nn){
+void forward_n_net(const N_Net nn){
     for(int i = 0; i < nn.l_count; i++){
         mt_mult(nn.a_n[i+1], nn.a_n[i], nn.w_n[i]);
         mt_add(nn.a_n[i+1], nn.b_n[i]);
@@ -126,23 +117,23 @@ void forward_n_net(N_Net nn){
     }
 };
 
-float loss_n_net(N_Net nn, Matrix expect){
+float loss_n_net(const N_Net nn, const Matrix expect){
     //note: neural net should be pre-forwarded
     assert(expect.rows == 1);
     assert(expect.cols == (output_n_net(nn)).cols);
 
     float diff = 0.0f;
     for (int i = 0; i < expect.cols; i++){
-        float v1 = mt_pos(output_n_net(nn), 0, i);
-        float v2 = mt_pos(expect, 0, i);
+        const float v1 = mt_pos(output_n_net(nn), 0, i);
+        const float v2 = mt_pos(expect, 0, i);
         diff += (v1 - v2)*(v1 - v2);
     }
     return diff;
 };
 
-void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output) {
+void backprop_n_net(const N_Net nn, const N_Net grad, const Matrix input, const Matrix output) {
     assert(input.rows == output.rows);
-    int n = input.rows;
+    const int n = input.rows;
 
     // Clear gradients
     for (int i = 0; i < grad.l_count; i++) {
@@ -159,28 +150,28 @@ void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output) {
         }
 
         for (int j = 0; j < output.cols; j++) {
-            float a = mt_pos(nn.a_n[nn.l_count], 0, j);
-            float y = mt_pos(output, sample, j);
-            float delta = 2 * (a - y) * a * (1 - a); 
+            float const a = mt_pos(nn.a_n[nn.l_count], 0, j);
+            float const y = mt_pos(output, sample, j);
+            float const delta = 2 * (a - y) * a * (1 - a);
             mt_pos(grad.a_n[nn.l_count], 0, j) = delta;
         }
 
         for (int l = nn.l_count; l > 0; l--) {
-            Matrix a_prev = nn.a_n[l - 1];
-            Matrix delta_curr = grad.a_n[l];
+            Matrix const a_prev = nn.a_n[l - 1];
+            Matrix const delta_curr = grad.a_n[l];
 
             for (int j = 0; j < nn.a_n[l].cols; j++) {
-                float delta = mt_pos(delta_curr, 0, j);
+                float const delta = mt_pos(delta_curr, 0, j);
 
                 // Bias gradient
                 mt_pos(grad.b_n[l - 1], 0, j) += delta;
 
                 for (int k = 0; k < a_prev.cols; k++) {
-                    float a = mt_pos(a_prev, 0, k);
+                    float const a = mt_pos(a_prev, 0, k);
                     mt_pos(grad.w_n[l - 1], k, j) += delta * a;
 
-                    float w = mt_pos(nn.w_n[l - 1], k, j);
-                    float prev_a = mt_pos(a_prev, 0, k);
+                    float const w = mt_pos(nn.w_n[l - 1], k, j);
+                    float const prev_a = mt_pos(a_prev, 0, k);
                     mt_pos(grad.a_n[l - 1], 0, k) += delta * w * prev_a * (1 - prev_a);
                 }
             }
@@ -200,7 +191,7 @@ void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output) {
 }
 
 
-void learn_n_net(N_Net nn, N_Net grad, float rate){
+void learn_n_net(const N_Net nn, const N_Net grad, const float rate){
     //applies gradient to neural network
     assert(nn.arch_len == grad.arch_len);
 
@@ -212,7 +203,7 @@ void learn_n_net(N_Net nn, N_Net grad, float rate){
     }
 }
 
-void train_n_net(N_Net nn, N_Net grad, Matrix inputs, Matrix outputs, int samples, float rate, int iters, bool show_proc){
+void train_n_net(const N_Net nn, const N_Net grad, const Matrix inputs, const Matrix outputs, int samples, float rate, int iters, bool show_proc){
     for(int iter = 0; iter < iters; iter++){
 
         float loss = 0;
@@ -220,18 +211,18 @@ void train_n_net(N_Net nn, N_Net grad, Matrix inputs, Matrix outputs, int sample
         for(int i = 0; i < samples; i++){
             set_n_net_input(nn, mt_row(inputs, i));
             forward_n_net(nn);
-            float mse = loss_n_net(nn, mt_row(outputs, i));
+            const float mse = loss_n_net(nn, mt_row(outputs, i));
             loss += mse;
         }
         if (show_proc){
-            printf("%-6d loss: %f\n", iter, loss/samples);
+            printf("%-6d loss: %f\n", iter, loss/(float)samples);
         }
         backprop_n_net(nn, grad, inputs, outputs);
         learn_n_net(nn, grad, rate);
     }
 };
 
-void save_n_net(N_Net nn, const char *filepath){
+void save_n_net(const N_Net nn, const char *filepath){
     FILE *config = fopen(filepath, "w");
     assert(config != NULL);
     fprintf(config, "%d\n", nn.arch_len);
@@ -264,7 +255,7 @@ void save_n_net(N_Net nn, const char *filepath){
     fclose(config);
 };
 
-void load_n_net(N_Net nn, const char *filepath){
+void load_n_net(const N_Net nn, const char *filepath){
     FILE *config = fopen(filepath, "r");
     assert(config != NULL);
     

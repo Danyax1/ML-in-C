@@ -53,7 +53,7 @@ int main(){
     N_Net grad = create_n_net(l_count, arch_len, arch);
     float rate = (1);
 
-    train_n_net(nn, grad, inputs, outputs, N_SAMPLES, rate, 10000, false);
+    train_n_net(nn, grad, inputs, outputs, N_SAMPLES, rate, 10000, true);
 
     printf("------------------------------\n");
     
