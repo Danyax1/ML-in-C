@@ -205,12 +205,31 @@ void learn_n_net(N_Net nn, N_Net grad, float rate){
     assert(nn.arch_len == grad.arch_len);
 
     for (int i = 0; i < nn.l_count; i++){
-        mt_scale(grad.w_n[i], rate);
-        mt_scale(grad.b_n[i], rate);
+        mt_scale(grad.w_n[i], -rate);
+        mt_scale(grad.b_n[i], -rate);
         mt_add(nn.w_n[i], grad.w_n[i]);
         mt_add(nn.b_n[i], grad.b_n[i]);
     }
 }
+
+void train_n_net(N_Net nn, N_Net grad, Matrix inputs, Matrix outputs, int samples, float rate, int iters, bool show_proc){
+    for(int iter = 0; iter < iters; iter++){
+
+        float loss = 0;
+
+        for(int i = 0; i < samples; i++){
+            set_n_net_input(nn, mt_row(inputs, i));
+            forward_n_net(nn);
+            float mse = loss_n_net(nn, mt_row(outputs, i));
+            loss += mse;
+        }
+        if (show_proc){
+            printf("%-6d loss: %f\n", iter, loss/samples);
+        }
+        backprop_n_net(nn, grad, inputs, outputs);
+        learn_n_net(nn, grad, rate);
+    }
+};
 
 void save_n_net(N_Net nn, const char *filepath){
     FILE *config = fopen(filepath, "w");

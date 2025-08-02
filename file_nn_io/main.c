@@ -51,58 +51,10 @@ int main(){
     N_Net nn = create_n_net(l_count, arch_len, arch);
     rand_n_net(nn, -3, 3);
     N_Net grad = create_n_net(l_count, arch_len, arch);
-    float rate = -(1);
+    float rate = (1);
 
-    // for(int iter = 0; iter < 1000; iter++){
+    train_n_net(nn, grad, inputs, outputs, N_SAMPLES, rate, 10000, false);
 
-    //     float loss = 0;
-
-    //     for(int i = 0; i < N_SAMPLES; i++){
-    //         set_n_net_input(nn, mt_row(inputs, i));
-    //         forward_n_net(nn);
-    //         float mse = loss_n_net(nn, mt_row(outputs, i));
-    //         loss += mse;
-    //     }
-    //     printf("%-6d loss: %f\n", iter, loss/N_SAMPLES);
-    //     backprop_n_net(nn, grad, inputs, outputs);
-    //     learn_n_net(nn, grad, rate);
-    // }
-    // printf("------------------------------\n");
-    
-    // for (int i = 0; i < inputs.rows; i++) {
-    //     set_n_net_input(nn, mt_row(inputs, i));
-    //     forward_n_net(nn);
-
-    //     float out = mt_pos(output_n_net(nn), 0, 0);
-    //     printf("%d%d + %d%d = %f\n", (int)dataset[i][0], (int)dataset[i][1], (int)dataset[i][2],(int)dataset[i][3], out*6.0f);
-    // }
-
-    // save config in config.txt
-
-    /*
-    1: arch_len
-    2: arch
-    3: w_n
-    4: b_n
-    */
-    printf("Loading...");
-    load_n_net(nn, "nn.txt");
-    print_n_net(nn);
-
-    for(int iter = 0; iter < 1; iter++){
-
-        float loss = 0;
-
-        for(int i = 0; i < N_SAMPLES; i++){
-            set_n_net_input(nn, mt_row(inputs, i));
-            forward_n_net(nn);
-            float mse = loss_n_net(nn, mt_row(outputs, i));
-            loss += mse;
-        }
-        printf("%-6d loss: %f\n", iter, loss/N_SAMPLES);
-        backprop_n_net(nn, grad, inputs, outputs);
-        learn_n_net(nn, grad, rate);
-    }
     printf("------------------------------\n");
     
     for (int i = 0; i < inputs.rows; i++) {
@@ -112,5 +64,6 @@ int main(){
         float out = mt_pos(output_n_net(nn), 0, 0);
         printf("%d%d + %d%d = %f\n", (int)dataset[i][0], (int)dataset[i][1], (int)dataset[i][2],(int)dataset[i][3], out*6.0f);
     }
+    printf("------------------------------\n");
     return 0;
 }

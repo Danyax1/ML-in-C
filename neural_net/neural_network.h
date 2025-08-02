@@ -2,6 +2,7 @@
 #define NN_LIB_H
 
 #include <math.h>
+#include <stdbool.h>
 #include "matrix_lib.h"
 
 float ReLU (float val);
@@ -36,6 +37,7 @@ void forward_n_net(N_Net nn);
 float loss_n_net(N_Net nn, Matrix expect);
 void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output);
 void learn_n_net(N_Net nn, N_Net grad, float rate);
+void train_n_net(N_Net nn, N_Net grad, Matrix inputs, Matrix outputs, int samples, float rate, int iters, bool show_proc);
 
 void save_n_net(N_Net nn, const char *filepath);
 void load_n_net(N_Net nn, const char *filepath);
