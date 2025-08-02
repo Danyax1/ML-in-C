@@ -211,3 +211,74 @@ void learn_n_net(N_Net nn, N_Net grad, float rate){
         mt_add(nn.b_n[i], grad.b_n[i]);
     }
 }
+
+void save_n_net(N_Net nn, const char *filepath){
+    FILE *config = fopen(filepath, "w");
+    assert(config != NULL);
+    fprintf(config, "%d\n", nn.arch_len);
+
+    for(int i = 0; i < nn.arch_len; i++){
+        fprintf(config, "%d ", nn.arch[i]);
+    }
+    fprintf(config, "\n");
+
+    for(int i = 0; i < nn.l_count; i++){
+        for(int j = 0; j < nn.w_n[i].rows; j++){
+            for(int k = 0; k < nn.w_n[i].cols; k++){
+                fprintf(config, "%f ", mt_pos(nn.w_n[i], j, k));
+            }
+            fprintf(config, "\n");
+        }
+        fprintf(config, "\n");
+    }
+    fprintf(config, "\n");
+    for(int i = 0; i < nn.l_count; i++){
+        for(int j = 0; j < nn.b_n[i].rows; j++){
+            for(int k = 0; k < nn.b_n[i].cols; k++){
+                fprintf(config, "%f ", mt_pos(nn.b_n[i], j, k));
+            }
+            fprintf(config, "\n");
+        }
+        fprintf(config, "\n");
+    }
+
+    fclose(config);
+};
+
+void load_n_net(N_Net nn, const char *filepath){
+    FILE *config = fopen(filepath, "r");
+    assert(config != NULL);
+    
+    int arch_len;
+    fscanf(config, "%d\n", &arch_len);
+    assert(arch_len == nn.arch_len);
+
+    int n_count;
+    for(int i = 0; i < arch_len; i++){
+        fscanf(config, "%d ", &n_count);
+        assert(n_count == nn.arch[i]);
+    }
+    fscanf(config, "\n");
+
+    for(int i = 0; i < nn.l_count; i++){
+        for(int j = 0; j < nn.w_n[i].rows; j++){
+            for(int k = 0; k < nn.w_n[i].cols; k++){
+                fscanf(config, "%f ", &mt_pos(nn.w_n[i], j, k));
+            }
+            fscanf(config, "\n");
+        }
+        fscanf(config, "\n");
+    }
+    fscanf(config, "\n");
+    for(int i = 0; i < nn.l_count; i++){
+        for(int j = 0; j < nn.b_n[i].rows; j++){
+            for(int k = 0; k < nn.b_n[i].cols; k++){
+                fscanf(config, "%f ", &mt_pos(nn.b_n[i], j, k));
+            }
+            fscanf(config, "\n");
+        }
+        fscanf(config, "\n");
+    }
+
+    fclose(config);
+};

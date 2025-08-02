@@ -37,5 +37,6 @@ float loss_n_net(N_Net nn, Matrix expect);
 void backprop_n_net(N_Net nn, N_Net grad, Matrix input, Matrix output);
 void learn_n_net(N_Net nn, N_Net grad, float rate);
 
-
+void save_n_net(N_Net nn, const char *filepath);
+void load_n_net(N_Net nn, const char *filepath);
 #endif //NN_LIB_H

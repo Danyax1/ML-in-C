@@ -1,3 +1,5 @@
 .git
 *.exe
 .vscode
+digit_config.txt
+nn.txt
