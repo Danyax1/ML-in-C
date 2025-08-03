@@ -44,4 +44,7 @@ float mt_det(const Matrix m);
 
 void mt_rearrange(Matrix *m, const int rows, const int cols);
 void split_dataset(const float* data, const int input_size, const int output_size, const int n_samples, const Matrix input, const Matrix output);
+
+void mt_save(const Matrix m, const char *filepath);
+void mt_load(const Matrix m, const char *filepath);
 #endif // MATRIX_LIB_H

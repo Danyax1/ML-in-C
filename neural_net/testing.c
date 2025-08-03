@@ -50,12 +50,7 @@ int main(){
     mt_copy(id, res);
     mt_print(id);
     
-    mt_free(&m);
-    mt_free(&m1);
-    mt_free(&m2);
-    mt_free(&m_det);
-    mt_free(&id);
-    mt_free(&res);
+
 
     float dataset[N_SAMPLES][INPUT_SIZE + OUTPUT_SIZE] = {
       // A1 A0 B1 B0|Sum
@@ -123,10 +118,26 @@ int main(){
         float out = mt_pos(output_n_net(nn), 0, 0);
         printf("%d%d + %d%d = %f\n", (int)dataset[i][0], (int)dataset[i][1], (int)dataset[i][2],(int)dataset[i][3], out*6.0f);
     }
+    printf("------------------------------\n");
+    mt_save(m, "mat.txt");
+    mt_print(m);
+    Matrix m_copy = mt_create(3, 3);
+    mt_print(m_copy);
+    mt_load(m_copy, "mat.txt");
+    mt_print(m_copy);
+
+    printf("------------------------------\n");
     free_n_net(&nn);
     free_n_net(&grad);
     mt_free(&inputs);
     mt_free(&outputs);
+
+    mt_free(&m);
+    mt_free(&m1);
+    mt_free(&m2);
+    mt_free(&m_det);
+    mt_free(&id);
+    mt_free(&res);
 
     return 0;
 }

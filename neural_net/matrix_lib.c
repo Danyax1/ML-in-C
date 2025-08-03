@@ -229,3 +229,38 @@ void split_dataset(const float* data, const int input_size, const int output_siz
         }
     }
 }
+
+void mt_save(const Matrix m, const char *filepath){
+    FILE *file = fopen(filepath, "w");
+    assert(file != NULL);
+    fprintf(file, "%d %d %d\n", m.rows, m.cols, m.stride);
+    for(int i = 0; i < m.rows; i++){
+        for(int j = 0; j < m.cols; j++){
+            fprintf(file, "%f ", mt_pos(m, i, j));
+        }
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
+};
+void mt_load(const Matrix m, const char *filepath){
+    FILE *file = fopen(filepath, "r");
+    assert(file != NULL);
+    int rows;
+    int cols;
+    int stride;
+    fscanf(file, "%d %d %d\n", &rows, &cols, &stride);
+
+    assert(rows == m.rows);
+    assert(cols == m.cols);
+    assert(stride == m.stride);
+    
+    for(int i = 0; i < m.rows; i++){
+        for(int j = 0; j < m.cols; j++){
+            fscanf(file, "%f ", &mt_pos(m, i, j));
+        }
+        fscanf(file, "\n");
+    }
+
+    fclose(file);
+};
