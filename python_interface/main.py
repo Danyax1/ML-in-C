@@ -77,8 +77,9 @@ class DigitDrawer:
                 self.grid[i][j] = 0
                 self.canvas.itemconfig(self.rects[i][j], fill='white')
 
-    def save_config(self, filename="digit_config.txt"):
+    def save_config(self, filename=".\python_interface\digit_config.txt"):
         with open(filename, 'w') as f:
+            f.write(f"{GRID_SIZE} {GRID_SIZE} {GRID_SIZE}\n")
             for row in self.grid:
                 normalized_row = [round(val / MAX_INTENSITY, 2) for val in row]
                 f.write(' '.join(map(str, normalized_row)) + '\n')
