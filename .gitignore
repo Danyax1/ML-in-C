@@ -4,3 +4,6 @@
 digit_config.txt
 nn.txt
 *txt
+
+!digits.txt
+!labels.txt

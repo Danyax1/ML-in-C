@@ -3,7 +3,7 @@ from tensorflow.keras.datasets import mnist
 from PIL import Image
 
 GRID = 14
-N = 1000  # number of samples to generate
+N = 10000
 
 # Output files
 digits_path = "./digits.txt"
