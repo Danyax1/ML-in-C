@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import simpledialog
+
 
 GRID_SIZE = 14
 CELL_SIZE = 20
@@ -35,7 +37,7 @@ class DigitDrawer:
         clear_btn = tk.Button(button_frame, text="Clear", command=self.clear_grid)
         clear_btn.pack(side=tk.LEFT, padx=5)
 
-        save_btn = tk.Button(button_frame, text="Save Config", command=self.save_config)
+        save_btn = tk.Button(button_frame, text="Save Digit", command=self.save_and_label)
         save_btn.pack(side=tk.LEFT, padx=5)
 
     def draw_grid(self):
@@ -77,13 +79,26 @@ class DigitDrawer:
                 self.grid[i][j] = 0
                 self.canvas.itemconfig(self.rects[i][j], fill='white')
 
-    def save_config(self, filename=".\python_interface\digit_config.txt"):
-        with open(filename, 'w') as f:
+    def save_and_label(self, digit_path=".\data\digits.txt", label_path=".\data\labels.txt"):
+        label = tk.simpledialog.askinteger("Input", "Enter the digit (0-9):", minvalue=0, maxvalue=9)
+        if label is None:
+            print("Canceled")
+            return
+
+        flattened = [round(val / MAX_INTENSITY, 2) for row in self.grid for val in row]
+
+        with open(digit_path, 'a') as f:
             f.write(f"{GRID_SIZE} {GRID_SIZE} {GRID_SIZE}\n")
-            for row in self.grid:
-                normalized_row = [round(val / MAX_INTENSITY, 2) for val in row]
-                f.write(' '.join(map(str, normalized_row)) + '\n')
-        print(f"Saved grayscale config to {filename}")
+            for i in range(GRID_SIZE):
+                row = flattened[i * GRID_SIZE:(i + 1) * GRID_SIZE]
+                f.write(' '.join(map(str, row)) + '\n')
+
+        with open(label_path, 'a') as f:
+            f.write(f"{label}\n")
+
+        print(f"Saved digit with label {label} to dataset.")
+        self.clear_grid()
+
 
 
 if __name__ == "__main__":

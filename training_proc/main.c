@@ -3,19 +3,48 @@
 #include "..\neural_net\neural_network.h"
 
 #define GRID 14
+#define SAMPLES 10000
+#define OUTPUT_SIZE 1
+
+
+void load_digit_dataset(Matrix data, const char* filepath) {
+    FILE* file = fopen(filepath, "r");
+    assert(file);
+
+    int rows = data.rows;
+    int cols = data.cols;
+
+    for (int i = 0; i < rows; i++) {
+        int r, c, s;
+        fscanf(file, "%d %d %d\n", &r, &c, &s);
+        assert(r * c == cols);
+
+        for (int j = 0; j < cols; j++) {
+            fscanf(file, "%f", &mt_pos(data, i, j));
+        }
+    }
+
+    fclose(file);
+}
+
+void load_digit_labels(Matrix labels, const char* filepath) {
+    FILE* file = fopen(filepath, "r");
+    assert(file);
+
+    for (int i = 0; i < labels.rows; i++) {
+        int digit;
+        fscanf(file, "%d", &digit);
+        mt_pos(labels, i, 0) = digit / 9.0f;  // normalize
+    }
+
+    fclose(file);
+}
 
 int main(void){
     srand(time(0));
 
-    Matrix hand_digit = mt_create(GRID, GRID);
-    mt_load(hand_digit, "..\\python_interface\\digit_config.txt");
-    mt_rearrange(&hand_digit, 1, GRID*GRID);
-
-    Matrix goal_digit = mt_create(1, 1);
-    mt_pos(goal_digit, 0, 0) = 6.0f/9.0f;
-
-    // mt_print(hand_digit);
-    // mt_print(goal_digit);
+    Matrix X = mt_create(SAMPLES, GRID*GRID);
+    Matrix Y = mt_create(SAMPLES, OUTPUT_SIZE);
 
 
     int arch[] = {GRID*GRID, GRID, GRID, 1};
@@ -29,27 +58,19 @@ int main(void){
     float rate = (1);
 
     
-    for(int iter = 0; iter < 10; iter++){
+    for (int epoch = 0; epoch < 50; epoch++) {
         float loss = 0;
-        set_n_net_input(nn, hand_digit);
-        forward_n_net(nn);
-        float mse = loss_n_net(nn, goal_digit);
-        loss += mse;
-        
-        printf("%-6d loss: %f\n", iter, loss/1);
-        backprop_n_net(nn, grad, hand_digit, goal_digit);
+        for (int i = 0; i < SAMPLES; i++) {
+            set_n_net_input(nn, mt_row(X, i));
+            forward_n_net(nn);
+            loss += loss_n_net(nn, mt_row(Y, i));
+        }
+        printf("Epoch %3d Loss: %8f\n", epoch, loss / SAMPLES);
+        backprop_n_net(nn, grad, X, Y);
         learn_n_net(nn, grad, rate);
     }
 
-
-    // print_n_net(nn);
-    set_n_net_input(nn, hand_digit);
-    forward_n_net(nn);
-    float out = mt_pos(output_n_net(nn), 0, 0);
-
-    printf("RESULT: %f", out);
-
-
+    save_n_net(nn, "nn_config.txt");
 
     return 0;
 }
