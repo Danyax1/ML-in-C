@@ -7,3 +7,6 @@ nn.txt
 
 !digits.txt
 !labels.txt
+!nn_config.txt
+!recognize_digit.exe
+!temp_digit.txt
