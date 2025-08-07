@@ -3,13 +3,13 @@ from tkinter import messagebox
 import subprocess
 
 GRID_SIZE = 14
-CELL_SIZE = 10
+CELL_SIZE = 20
 MAX_INTENSITY = 255
 INTENSITY_STEP = 5
 DRAW_INTERVAL_MS = 1
 
-TEMP_INPUT_FILE = "../bin/temp_digit.txt"
-RECOGNIZER_EXECUTABLE = "../bin/recognize_digit.exe"
+TEMP_INPUT_FILE = "temp_digit.txt"
+RECOGNIZER_EXECUTABLE = "recognize_digit.exe"
 
 class DigitDrawer:
     def __init__(self, root):
@@ -80,7 +80,7 @@ class DigitDrawer:
 
     def save_temp_digit(self):
         flattened = [round(val / MAX_INTENSITY, 2) for row in self.grid for val in row]
-        with open(TEMP_INPUT_FILE, 'w') as f:
+        with open(TEMP_INPUT_FILE, 'w+') as f:
             f.write(f"{GRID_SIZE} {GRID_SIZE} {GRID_SIZE}\n")
             for i in range(GRID_SIZE):
                 row = flattened[i * GRID_SIZE:(i + 1) * GRID_SIZE]

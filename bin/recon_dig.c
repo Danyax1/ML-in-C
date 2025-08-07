@@ -7,7 +7,7 @@
 #define GRID 14
 
 int main(void) {
-    float res = -1;
+    int res = -1;
 
     Matrix passed_digit = mt_create(1, GRID * GRID);
 
@@ -34,9 +34,9 @@ int main(void) {
     set_n_net_input(nn, mt_row(passed_digit, 0));
     forward_n_net(nn);
 
-    res = mt_pos(output_n_net(nn), 0, 0) * 9.0f;
+    res = (int)(mt_pos(output_n_net(nn), 0, 0) * 9.0f + 0.5);
 
-    printf("%f\n", res); 
+    printf("%d\n", res); 
 
     return 0;
 }

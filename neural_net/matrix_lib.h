@@ -8,6 +8,7 @@
 #include <assert.h>
 #include <time.h>
 
+float random_int(const int low, const int high);
 float random_float(const float low, const float high);
 
 typedef struct {
@@ -43,6 +44,7 @@ void mt_scale(const Matrix m0, const float scale);
 float mt_det(const Matrix m);
 
 void mt_rearrange(Matrix *m, const int rows, const int cols);
+void mt_randomize_rows(const Matrix m, const Matrix m1);
 void split_dataset(const float* data, const int input_size, const int output_size, const int n_samples, const Matrix input, const Matrix output);
 
 void mt_save(const Matrix m, const char *filepath);

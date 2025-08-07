@@ -1,5 +1,9 @@
 #include "matrix_lib.h"
 
+float random_int(const int low, const int high) {
+    return (rand() % (high - low + 1)) + low;
+}
+
 float random_float(const float low, const float high) {
     return low + ((float) rand() / (float) RAND_MAX) * (high - low);
 }
@@ -118,7 +122,7 @@ void MATRIX_PRINT(const Matrix m, const char *name){
     for (int i = 0; i < m.rows; i++){
         printf("%*s", (int)strlen(name)+4, "");
         for (int j = 0; j < m.cols; j++){
-            printf(" %9f ", mt_pos(m, i, j));
+            printf(" %5.4f ", mt_pos(m, i, j));
         }
         printf("\n");
     }
@@ -214,6 +218,16 @@ void mt_rearrange(Matrix *m, const int rows, const int cols) {
 
     m->rows = rows;
     m->cols = cols;
+}
+
+void mt_randomize_rows(const Matrix m, const Matrix m1){
+    assert(m.rows == m1.rows);
+    int rows = m.rows;
+    for(int i = 0; i < rows; i++){
+        int j = random_int(i, rows - 1);
+        mt_swap_row(m, i, j);
+        mt_swap_row(m1, i, j);
+    }
 }
 
 void split_dataset(const float* data, const int input_size, const int output_size, const int n_samples, const Matrix input, const Matrix output) {
