@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "..\neural_net\matrix_lib.h"
-#include "..\neural_net\neural_network.h"
+#include "../neural_net/matrix_lib.h"
+#include "../neural_net/neural_network.h"
 
 #define GRID 14
 

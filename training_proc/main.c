@@ -1,6 +1,6 @@
 #include <time.h>
-#include "..\neural_net\matrix_lib.h"
-#include "..\neural_net\neural_network.h"
+#include "../neural_net/matrix_lib.h"
+#include "../neural_net/neural_network.h"
 
 #define GRID 14
 #define SAMPLES 49000
@@ -108,7 +108,7 @@ int main(void){
 
         if(out == expect) correct++;
     }
-    printf("Correct: %f %%", (float)correct/10.0f);
+    printf("Correct: %f %%\n", (float)correct/10.0f);
 
     save_n_net(nn, "nn_config.txt");
 
